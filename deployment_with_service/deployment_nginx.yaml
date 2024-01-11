@@ -25,7 +25,20 @@ spec:
         volumeMounts:
           - mountPath: /home/
             name: script-file
+        livenessProbe:
+          httpGet:
+            path: "/"
+            port: 80
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: "/"
+            port: 80
+          initialDelaySeconds: 90
+          periodSeconds: 10
       volumes:
         - name: script-file
           configMap:
             name: script-index
+
