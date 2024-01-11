@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp-dep
+  template:
+    metadata:
+      labels:
+        app: myapp-dep
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+        command: ["/bin/sh", "-c", "sh /home/script.sh && nginx -g 'daemon off;'"]
+        volumeMounts:
+          - mountPath: /home/
+            name: script-file
+      volumes:
+        - name: script-file
+          configMap:
+            name: script-index

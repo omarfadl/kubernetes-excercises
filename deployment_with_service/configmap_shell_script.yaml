@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: script-index
+data:
+  script.sh : |
+    #!/bin/sh
+    echo "<html><body><h1>This is Pod $HOSTNAME</h1></body></html>" > /usr/share/nginx/html/index.html
+
