@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: v1
+  name: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      version: v1
+      app: web
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: web
+        version: v1
+    spec:
+      initContainers:
+      - image: busybox
+        name: init
+        command: [ "sh", "-c", "echo \"<h2 style='background-color:${COLOR}'>${COLOR} APP V1 background-color</h2>\" > /data/index.html" ]
+        volumeMounts:
+        - name: index
+          mountPath: /data
+        env:
+        - name: COLOR
+          valueFrom:
+            configMapKeyRef:
+              name: webcolor
+              key: v1
+      containers:
+      - image: httpd
+        name: httpd
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: index
+          mountPath: /usr/local/apache2/htdocs
+        resources: {}
+      volumes:
+      - name: index
+        emptyDir: {}
+status: {}
